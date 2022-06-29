@@ -1,0 +1,16 @@
+建表
+CREATE TABLE default.tablename(`column` String)ENGINE = MergeTree ORDER BY column PARTITION BY toYYYYMM(date)
+修改
+ALTER TABLE tablename UPDATE column = '' WHERE column = ''
+删除表
+DROP TABLE tablename
+去重
+OPTIMIZE TABLE tablename FINAL DEDUPLICATE BY column
+导出
+clickhouse-client --query="SELECT * FROM tablename FORMAT CSV" > /tablename.csv
+导入
+clickhouse-client --query="INSERT INTO tablename FORMAT CSV" < /tablename.csv
+显示进行中的任务
+SHOW PROCESSLIST
+查询记录表
+system.query_log
