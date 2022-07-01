@@ -1,0 +1,27 @@
+Docker
+	https://docs.docker.com/
+设置yum仓库
+	yum install -y yum-utils
+	yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+	yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+更新yum索引
+	yum makecache fast
+安装docker
+	yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+启动docker
+	systemctl start docker
+	systemctl status docker
+	docker version
+	docker run hello-world
+	systemctl stop docker
+数据存储目录
+	/var/lib/docker
+	/var/lib/containerd
+阿里镜像加速
+	sudo tee /etc/docker/daemon.json <<-'EOF'
+	{
+	  "registry-mirrors": ["https://oo94bfkd.mirror.aliyuncs.com"]
+	}
+	EOF
+	systemctl daemon-reload
+	systemctl restart docker

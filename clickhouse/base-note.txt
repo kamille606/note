@@ -1,16 +1,71 @@
+修改系统限制
+	/etc/security/limits.conf
+	/etc/security/limits.d/20-nproc.conf
+	* soft nofile 65536
+	* hard nofile 65536
+	* soft nproc 131072
+	* hard nproc 131072
+安装依赖
+	yum install -y libtool
+	yum install -y *unixODBC*
+取消SELINUX
+	/etc/selinux/config
+	SELINUX=disabled
+rpm安装
+	rpm -ivh *.rpm
+	/usr/bin
+	/var/lib/clickhouse
+	/var/log/clickhouse
+	/etc/clickhouse
+
+修改配置
+	/etc/clickhouse-server/config.xml
+	<listen_host>::</listen_host>
+启动
+	clickhouse start
+查询
+	clickhouse-client --query ""
+连接
+	clickhouse-client
+	clickhouse-client --host 127.0.0.1 --port=9000 -u default
+开机启动
+	systemctl enable vsftpd.service
+	systemctl disable vsftpd.service
+
+数据类型
+int8 int16 int32 int64
+Uint8 Uint16 Uint32 Uint64
+Float32 Float64
+Decimal32 Decimal64 Decimal128
+String
+Enum8 Enum16
+
+物化视图
+	clickhouse作为一个从节点主动复制数据
+
+SQL语句
+查看库 SHOW CREATE DATABASE ck
+查看表 SHOW CREATE tb
+切换库 USE mysql_db
+建库
+	CREATE DATABASE [if not exists] ck ENGINE = atomic
+	CREATE DATABASE [if not exists] mysql_db ENGINE = MySQL('ip:port','database','username','password')
 建表
-CREATE TABLE default.tablename(`column` String)ENGINE = MergeTree ORDER BY column PARTITION BY toYYYYMM(date)
+	CREATE TABLE default.tablename(`column` String)ENGINE = MergeTree ORDER BY column PARTITION BY toYYYYMM(date)
 修改
-ALTER TABLE tablename UPDATE column = '' WHERE column = ''
+	ALTER TABLE tablename UPDATE column = '' WHERE column = ''
 删除表
-DROP TABLE tablename
+	DROP TABLE tablename
+创建枚举
+	create table t_enum(a Enum8('hello' = 1, 'world' = 2)) ENGINE = TinyLog
 去重
-OPTIMIZE TABLE tablename FINAL DEDUPLICATE BY column
+	OPTIMIZE TABLE tablename FINAL DEDUPLICATE BY column
 导出
-clickhouse-client --query="SELECT * FROM tablename FORMAT CSV" > /tablename.csv
+	clickhouse-client --query="SELECT * FROM tablename FORMAT CSV" > /tablename.csv
 导入
-clickhouse-client --query="INSERT INTO tablename FORMAT CSV" < /tablename.csv
+	clickhouse-client --query="INSERT INTO tablename FORMAT CSV" < /tablename.csv
 显示进行中的任务
-SHOW PROCESSLIST
-查询记录表
-system.query_log
+	SHOW PROCESSLIST
+
+注意
+现代cpu不支持128为数字，Decimal128由软件模拟计算，所以运算速度不如Decimal64。
